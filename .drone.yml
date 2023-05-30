@@ -1,0 +1,91 @@
+---
+kind: pipeline
+type: docker
+name: Testing
+
+steps:
+
+- name: "Test with Single file"
+  image: python:alpine
+  settings: 
+    portainer_instance:
+      from_secret: portainer_instance
+    portainer_endpoint_name: Chonky
+    portainer_username:
+      from_secret: portainer_username
+    portainer_password:
+      from_secret: portainer_password
+    global_env:
+      from_secret: compose_environment
+    docker_compose_file: ./test_files/docker-compose.yml
+  commands: 
+    - apk update && apk add git
+    - pip install pipreqs --disable-pip-version-check --root-user-action=ignore && pipreqs .
+    - pip install -r requirements.txt --force --disable-pip-version-check --root-user-action=ignore
+    - chmod +x portainer.py
+    - /usr/local/bin/python portainer.py 
+
+- name: "Test with Directory"
+  image: python:alpine
+  settings: 
+    portainer_instance:
+      from_secret: portainer_instance
+    portainer_endpoint_name: Chonky
+    portainer_username:
+      from_secret: portainer_username
+    portainer_password:
+      from_secret: portainer_password
+    global_env:
+      from_secret: compose_environment
+  commands:
+    - apk update && apk add git
+    - pip install pipreqs --disable-pip-version-check --root-user-action=ignore && pipreqs .
+    - pip install -r requirements.txt --force --disable-pip-version-check --root-user-action=ignore
+    - chmod +x portainer.py
+    - /usr/local/bin/python portainer.py 
+
+---
+kind: pipeline
+type: docker
+name: Building
+
+trigger:
+  branch:
+    - release
+# git push origin main:release
+# git commit -a -m "Release this"; git stage; git push origin main; git push origin main:release
+
+steps:
+- name: "Build & Push -> Docker Hub"
+  image: plugins/docker
+  environment:
+    PLUGIN_AUTO_LABEL: false
+  settings:
+    username: 
+      from_secret: dh_tenekev_username
+    password:
+      from_secret: dh_tenekev_password
+    context: .
+    dockerfile: Dockerfile
+    repo: tenekev/drone-portainer-plugin
+    tags:
+    - latest
+
+- name: "Test Deploy Compose"
+  image: tenekev/drone-portainer-plugin
+  settings: 
+    # doesn't need to be a secret
+    portainer_instance:
+      from_secret: portainer_instance
+    # default name might be local or Primary
+    portainer_endpoint_name: Chonky
+    # doesn't need to be a secret
+    portainer_username:
+      from_secret: portainer_username
+    portainer_password:
+      from_secret: portainer_password
+    # optional
+    global_env:
+      from_secret: compose_environment
+    # optional // forces plugin to update only this compose
+    docker_compose_file: ./test_files/docker-compose.yml

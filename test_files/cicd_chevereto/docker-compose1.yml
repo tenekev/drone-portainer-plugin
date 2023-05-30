@@ -1,0 +1,29 @@
+version: "3.1"
+
+volumes:
+  chever_conf:
+  chever_db:
+
+services:
+  chevereto:
+    image: ghcr.io/linuxserver/chevereto
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - chever_conf:/config
+
+  mariadb:
+    image: ghcr.io/linuxserver/mariadb
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - MYSQL_ROOT_PASSWORD=root
+      - TZ=Europe/Madrid
+      - MYSQL_DATABASE=chevereto
+      - MYSQL_USER=chevereto
+      - MYSQL_PASSWORD=chevereto
+      - CHEVERETO_DB_PREFIX=chv_
+    volumes:
+      - chever_db:/config
