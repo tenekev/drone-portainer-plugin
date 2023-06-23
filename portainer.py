@@ -47,7 +47,6 @@ def get_git_gitchanges() -> list:
 
   output = [i for i in output if "docker-compose" in i]
 
-
   return output
 
 
@@ -268,6 +267,9 @@ def main() -> None:
       if stack.stack_id:
         portainer.stack_stop(stack)
         portainer.stack_update(stack)
+      
+      elif "init" in stack.stack_name:
+        logger("stack init. skipping")
       
       else:
         portainer.stack_create(stack)
