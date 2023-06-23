@@ -12,4 +12,4 @@ RUN pip install -r requirements.txt
 
 RUN chmod +x portainer.py 
 
-CMD ["/usr/local/bin/python", "./portainer.py"]
+CMD ["/usr/local/bin/python", "/app/portainer.py"]
