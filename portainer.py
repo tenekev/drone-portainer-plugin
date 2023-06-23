@@ -274,6 +274,6 @@ def main() -> None:
         portainer.stack_update(stack)
 
       else:
-        portainer.stack_create(stack)
+        portainer.stack_create(stack) 
 
 if __name__ == '__main__': main()
