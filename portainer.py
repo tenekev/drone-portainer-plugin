@@ -158,7 +158,6 @@ class Stack:
     self.stack_name = self.handle_naming(os.path.abspath(compose_file_path))
     self.stack_id   = portainer.get_id('stacks', self.stack_name)
     self.stack_body = self.compose_file(os.path.abspath(compose_file_path))
-    self.stack_path = os.path.abspath(compose_file_path)
     self.global_env = json.loads(global_env)
     self.stack_env  = self.environment(os.path.abspath(compose_file_path))  
 
@@ -266,7 +265,7 @@ def main() -> None:
       )
 
       if "stack_init" in stack.stack_name:
-        print(f'stack_init. skipping {stack.stack_path}')
+        print(f'{stack.stack_name} skipped because it contains crucial infrastructure - Portainer, Gitea, Drone, Proxy. ')
         continue 
 
       if stack.stack_id:
