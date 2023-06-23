@@ -264,8 +264,8 @@ def main() -> None:
         global_env = env_var
       )
 
-      if "init" in stack.stack_name:
-        logger("stack init. skipping")
+      if "stack_init" in stack.stack_name:
+        logger('stack_init. skipping')
         continue 
 
       if stack.stack_id:
