@@ -152,7 +152,7 @@ class Portainer:
     if request.status_code != 200: raise RuntimeError(request.json())
 
 
-@logger('Defining Stack')
+@logger('Defining Stack object')
 class Stack:
   def __init__(self, portainer: 'Portainer', compose_file_path: str, global_env: str) -> None:
     self.stack_name = self.handle_naming(os.path.abspath(compose_file_path))
@@ -264,13 +264,14 @@ def main() -> None:
         global_env = env_var
       )
 
+      if "init" in stack.stack_name:
+        logger("stack init. skipping")
+        continue
+
       if stack.stack_id:
         portainer.stack_stop(stack)
         portainer.stack_update(stack)
-      
-      elif "init" in stack.stack_name:
-        logger("stack init. skipping")
-      
+
       else:
         portainer.stack_create(stack)
 
