@@ -266,7 +266,7 @@ def main() -> None:
 
       if "init" in stack.stack_name:
         logger("stack init. skipping")
-        continue
+        continue 
 
       if stack.stack_id:
         portainer.stack_stop(stack)
