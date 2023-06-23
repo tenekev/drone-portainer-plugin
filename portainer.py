@@ -265,7 +265,7 @@ def main() -> None:
       )
 
       if "stack_init" in stack.stack_name:
-        logger('stack_init. skipping')
+        print('stack_init. skipping')
         continue 
 
       if stack.stack_id:
