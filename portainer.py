@@ -242,6 +242,11 @@ def main() -> None:
   else:
     env_var = {}
 
+  if os.environ.get("PLUGIN_DOCKER_COMPOSE_SKIP"):
+    skip_stack = os.environ["PLUGIN_DOCKER_COMPOSE_SKIP"]
+  else:
+    skip_stack = 'stack_init'
+
   if os.environ.get("PLUGIN_DOCKER_COMPOSE_FILE"):
     stack = Stack(
       portainer = portainer,
@@ -264,7 +269,7 @@ def main() -> None:
         global_env = env_var
       )
 
-      if "stack_init" in stack.stack_name:
+      if skip_stack in stack.stack_name:
         print(f'{stack.stack_name} skipped because it contains crucial infrastructure - Portainer, Gitea, Drone, Proxy. ')
         continue 
 
